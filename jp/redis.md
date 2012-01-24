@@ -40,7 +40,7 @@ The latest source of this book is available at:
 イントロダクション
 
 Over the last couple years, the techniques and tools used for persisting and querying data have grown at an incredible pace. While it's safe to say that relational databases aren't going anywhere, we can also say that the ecosystem around data is never going to be the same.
-ここ数年の間、クエリによって問い合わせできる、永続的データに関する技術とツールは信じられない速さで進歩した。リレーショナル・データベースがこれからも広く使われてるであろうことは疑いの余地はないが、データをめぐるエコシステムはいつまでも同じであるとは言えないだろう。
+ここ数年の間、クエリによって問い合わせできる、永続的データに関する技術とツールは信じられない速さで進歩した。リレーショナル・データベースがこれからも広く使わるであろうことは疑いの余地はないが、データをめぐるエコシステムはいつまでも同じであるとは言えないだろう。
 
 Of all the new tools and solutions, for me, Redis has been the most exciting. Why? First because it's unbelievably easy to learn. Hours is the right unit to use when talking about length of time it takes to get comfortable with Redis. Secondly, it solves a specific set of problems while at the same time being quite generic. What exactly does that mean? Redis doesn't try to be all things to all data. As you get to know Redis, it'll become increasingly evident what does and what does not belong in it. And when it does, as a developer, it's a great experience.
 新しいデータ・ソリューションや道具の中で、私にとってもっとも面白いものはRedisであった。Redisについて２つの長所があげられる。１つ目は、Redisは驚くほど簡単に覚えられる。Redisを使いこなすためには何日もかからない。数時間単位の作業で、あなたはRedisを快適に使えるようになるだろう。２つ目は、Redisが実際に特定の問題を解くことにも使えるが、一般的に多くの問題を解くのに使えるという点である。これは何を意味するのであろうか？Redisのすべてのデータや、すべての技術を覚えなくてもあなたの必要としているデータを扱うことができる。そして、Redisを覚えれば覚えるほど、その問題に対して必要な部分とそうでない部分がわかるようになるのだ。私の開発経験において、この体験は大変すばらしいものであった。
@@ -73,6 +73,7 @@ zipファイルを解凍し、あなたのCPUアーキテクチャが64bitか32b
 *nixとMacOSX環境
 
 For *nix and and Mac users, building it from source is your best option. The instructions, along with the latest version number, are available at <http://redis.io/download>. At the time of this writing the latest version is 2.4.6; to install this version we would execute:
+*nixとMacのユーザは、ソースからRedisをビルドするのが一番よいだろう。最初のバージョンと導入にあたっての資料は<http://redis.io/download>にある。この本を書いている時点での最初のRedisのバージョンは2.4.6であり、インストールとビルドは以下のようにして行う
 
 	wget http://redis.googlecode.com/files/redis-2.4.6.tar.gz
 	tar xzf redis-2.4.6.tar.gz
@@ -80,20 +81,29 @@ For *nix and and Mac users, building it from source is your best option. The ins
 	make
 
 (Alternatively, Redis is available via various package managers. For example, MacOSX users with Homebrew installed can simply type `brew install redis`.)
+(代わりの方法として、Redisは多くのパッケージマネージャからインストールできる。たとえば、MacOSXのユーザはHomebrewをインストールしていれば`brew install redis`のコマンドだけでRedisをインストールできる。)
 
 If you built it from source, the binary outputs have been placed in the `src` directory. Navigate to the `src` directory by executing `cd src`.
+ソースからビルドした場合、バイナリは`src`ディレクトリに出力される。`cd src`コマンドを打ち、`src`ディレクトリに移動しよう
 
 ### Running and Connecting to Redis
+Redisの実行と接続
 
 If everything worked, the Redis binaries should be available at your fingertips. Redis has a handful of executables. We'll focus on the Redis server and the Redis command line interface (a DOS-like client). Let's start the server. In Windows, double click `redis-server`. On *nix/MacOSX run `./redis-server`. 
+もし全てがうまくいっていれば、Redisはあなたの手の届くところにあるはずである。Redisには複数の実行可能ファイルがある。ここでは、RedisサーバとRedisのコマンドラインクライアントのことだけを考えよう。最初に、サーバを起動しよう。Windowsでは、`redis-server`をダブルクリックしよう。*nix/MacOSXでは、`./redis-server`を走らせよう。
 
 If you read the start up message you'll see a warning that the `redis.conf` file couldn't be found. Redis will instead use built-in defaults, which is fine for what we'll be doing.
+初期化メッセージのあとに、あなたは`redis.conf`が見つからないというメッセージを見るだろう。Redisは代わりにデフォルトの設定を使用するが、今回の目的にはそれでOKである。
 
 Next start the Redis console by either double clicking `redis-cli` (Windows) or running `./redis-cli` (*nix/MacOSX). This will connect to the locally-running server on the default port (6379).
+次に、`redis-cli`をダブルクリック(Windows環境)もしくは`./redis-cli`を起動(*nix/MacOSX)してRedisコンソールを起動しよう。このRedisコンソールは、ローカルマシンのデフォルトポート(6379)のRedisサーバに接続する。
 
 You can test that everything is working by entering `info` into the command line interface. You'll hopefully see a bunch of key-value pairs which provide a great deal of insight into the server's status.
+全ての作業がうまく行っていることを確かめるために、`info`コマンドをコマンドラインに入力しよう。成功していれば一連のキーと値のペアが表示され、Redisのサーバ状態についての知見が得られるであろう。
+
 
 If you are having problems with the above setup I suggest you seek help in the [official Redis support group](https://groups.google.com/forum/#!forum/redis-db).
+もし上記の作業中に問題が発生したら、公式の[Redisサポートグループ](https://groups.google.com/forum/#!forum/redis-db)のドキュメントを探って問題を調べるのをお勧めする。
 
 ## Redis Drivers
 
