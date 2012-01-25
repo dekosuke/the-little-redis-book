@@ -108,20 +108,27 @@ If you are having problems with the above setup I suggest you seek help in the [
 ## Redis Drivers
 
 As you'll soon learn, Redis' API is best described as an explicit set of functions. It has a very simple and procedural feel to it. This means that whether you are using the command line tool, or a driver for your favorite language, things are very similar. Therefore, you shouldn't have any problems following along if you prefer to work from a programming language. If you want, head over to the [client page](http://redis.io/clients) and download the appropriate driver.
+RedisのAPIは、関数の集まりとして考えるのが一番適切である。単純で理解しやすいし、並べられた関数を順番に眺めることができる。あなたがコマンドラインツールを使用するか、あなたの好きな言語からのドライバ経由での利用であるかにかかわらず、この関数のリストは同じである。Redisをプログラミング言語から利用する場合でも、なんら問題がない。望むなら、[クライアントのページ](http://redis.io/clients)に行って、あなたのの望むドライバを見つけることができる。
 
 \clearpage
 
 ## Chapter 1 - The Basics
+一章 - 基礎
 
 What makes Redis special? What types of problems does it solve? What should developers watch out for when using it? Before we can answer any of these questions, we need to understand what Redis is. 
+Redisを特別にしているものは何か？Redisによって解決できる問題は何なのか？また、Redisを使用する際に開発者が気をつけないといけないことは何なのか？これらの問題に答える前に、Redisについての概要を理解しよう。
 
 Redis is often described as an in-memory persistent key-value store. I don't think that's an accurate description. Redis does hold all the data in memory (more on this in a bit), and it does write that out to disk for persistence, but it's much more than a simple key-value store. It's important to step beyond this misconception otherwise your perspective of Redis and the problems it solves will be too narrow.
+Redisは良く「インメモリの永続キー・バリューストア」と説明される。しかし、私はこれが正確な記述だとは思わない。たしかに、Redisは全てのデータをメモリに置く（これについては少し後述する）し、永続化のためにデータをディスクに書き込む。しかし、Redisは単なるキー・バリューストアではないのだ。Redisについての間違った見方を抜け出して、一歩前進しよう。そうすれば、Redisをより広い問題を解くための道具として使えるだろう。
 
 The reality is that Redis exposes five different data structures, only one of which is a typical key-value structure. Understanding these five data structures, how they work, what methods they expose and what you can model with them is the key to understanding Redis. First though, let's wrap our heads around what it means to expose data structures.
+現実には、Redisは5つもの異なるデータ構造を提供している。典型的なキー・バリューストアと呼ばれているものは、そのうちひとつだけだ。これらの5つのデータ構造がどのように動作し、どのようなメソッドを提供し、どんなモデルを作ることができるかを理解することは、Redisを理解する上でのキーポイントとなるだろう。しかし、最初に、データ構造をRedisが提供するというのは、どういうことであるか考えてみよう。
 
 If we were to apply this data structure concept to the relational world, we could say that databases expose a single data structure - tables. Tables are both complex and flexible. There isn't much you can't model, store or manipulate with tables. However, their generic nature isn't without drawbacks. Specifically, not everything is as simple, or as fast, as it ought to be. What if, rather than having a one-size-fits-all structure, we used more specialized structures? There might be some things we can't do (or at least, can't do very well), but surely we'd gain in simplicity and speed?
+リレーショナル・データベースの世界を考えよう。この世界では、RDBが提供するデータ構造はただひとつテーブルのみである。RDBのテーブルは、柔軟性があり、また複雑である。あなたがテーブルにデータを保存したり操作するにあたって、作れないモデルというのはそれほどないだろう。しかし、RDBのテーブルの一般的な性質には逆に欠点もある。可能な限りシンプルで、高速なデータを扱いたいとしても、そういうふうにはいかないのだ。RDBのような「一つで何でもできる」構造より、よりその問題に特化したデータ構造を持ってみるのはどうだろうか？それによって何らかの操作ができないとしても、単純さと性能を得ることができるのではないか？
 
 Using specific data structures for specific problems? Isn't that how we code? You don't use a hashtable for every piece of data, nor do you use a scalar variable. To me, that defines Redis' approach. If you are dealing with scalars, lists, hashes, or sets, why not store them as scalars, lists, hashes and sets? Why should checking for the existence of a value be any more complex than calling `exists(key)` or slower than O(1) (constant time lookup which won't slow down regardless of how many items there are)?
+特定の問題に、その問題に適した特定のデータ構造を使うというのは、私たちがコードを書くときのやり方そのものではないか？ハッシュテーブルで全てのデータをあらわすことはないし、スカラー値のデータではできないこともあるだろう。私にとって、Redis流の方法はこのように定義される。もしあなたがスカラー値、リスト、ハッシュ、集合を使いたいデータを持っているとしてたら、それぞれをスカラー値、リスト、ハッシュ、集合のデータ構造に保存すればいいのだ。ある値が存在するかどうかのチェックをするためには、`exists(key)`というO(1)（データ構造がどんなに大きくなっても同じ時間で終わる操作）の操作をすればよいし、それ以上複雑なものは要らないのだ。
 
 ## The Building Blocks
 
