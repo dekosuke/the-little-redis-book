@@ -154,32 +154,44 @@ Values represent the actual data associated with the key. They can be anything. 
 バリューは、キーに結びついた実際のデータである。データはどんなものでもよい。文字列でも、整数でも、シリアライズされたオブジェクト（JSON, XML やその他のフォーマット）でもよい。多くの場面において、Redisはデータをバイト列として扱い、その中身が何であるかについて感知しない。ドライバによってシリアライズの方法は自由なので（この部分はある意味あなたユーザ次第である）、この本では文字列、整数、JSONについてのみ扱う
 
 Let's get our hands a little dirty. Enter the following command:
+少し手を動かして、以下のコマンドを打ってみよう。
 
 	set users:leto "{name: leto, planet: dune, likes: [spice]}"
 
 This is the basic anatomy of a Redis command. First we have the actual command, in this case `set`. Next we have its parameters. The `set` command takes two parameters: the key we are setting and the value we are setting it to. Many, but not all, commands take a key (and when they do, it's often the first parameter). Can you guess how to retrieve this value? Hopefully you said (but don't worry if you weren't sure!):
+Redisのコマンドの仕組みについて基本を説明しよう。最初の`set`というのが実際のコマンドの名前である。その後に続いて並んでいるのがパラメータである。`set`コマンドは２つのパラメータを取る。セットしようとしているキーとバリューである。全てではないが、多くのコマンドはそのパラメータにキーを取る（多くの場合、最初のパラメータとして）。セットした値を取得するにはどうすればいいだろうか？あなたが答えられることを期待する（もちろん、答えられなくても気にしないでほしい！）
 
 	get users:leto
 
 Go ahead and play with some other combinations. Keys and values are fundamental concepts, and the `get` and `set` commands are the simplest way to play with them. Create more users, try different types of keys, try different values.
+一歩進んで、他のパラメータの組み合わせも試してみよう。キーとバリューは基本的なコンセプトだ。そして、`get`と`set`の２つのコマンドは、キーとバリューを扱う一番簡単な例である。`get`と`set`を使用して、別のキーとバリューを入力し、新たなユーザを作成してみよう。
 
 ### Querying
+クエリ
 
 As we move forward, two things will become clear. As far as Redis is concerned, keys are everything and values are nothing. Or, put another way, Redis doesn't allow you to query an object's values. Given the above, we can't find the user(s) which live on planet `dune`.  
+進んでいくにつれ、２つのことが明らかになる。Redisはキーについて全てを知っているが、バリューについては何も知らないということである。言い換えれば、あなたはバリューを利用してRedisに問い合わせることができない。上の例では、惑星`dune`に住んでいるユーザは誰なのかという問い合わせはすることができないのである。
 
 For many, this is will cause some concern. We've lived in a world where data querying is so flexible and powerful that Redis' approach seems primitive and unpragmatic. Don't let it unsettle you too much. Remember, Redis isn't a one-size-fits-all solution. There'll be things that just don't belong in there (because of the querying limitations). Also, consider that in some cases you'll find new ways to model your data. 
+多くの人にとって、これは何らかの問題を引き起こすであろう。私たちの住む世界では、クエリによる問い合わせは頻繁に使いたいと思うし、先ほどのRedisのアプローチは原始的すぎて現実的でないように思える。しかし、だからといって心配しすぎる必要はない。Redisが、１つの方法で全てを解決しようとするソリューションではないことを思い出そう。値をクエリによって問い合わせできないという制限によって、実際に解けない問題はある。もちろん、多くのケースでは、うまくデータをモデル化する新しい方法を見つけられるだろう。
 
 We'll look at more concrete examples as we move on, but it's important that we understand this basic reality of Redis. It helps us understand why values can be anything - Redis never needs to read or understand them. Also, it helps us get our minds thinking about modeling in this new world.
+この本を読み進めていくにつれ、もっと具体的な例を見ていく。しかし、重要なのはRedisについての現実を理解するのは重要である。それによって、Redisが実際には値の中をまったく知らないにも関わらず、値をどのようなものにもできるということが理解できるようになるだろう。加えて、この新しい世界でデータをモデリングする方法を考えるために、大きく役に立つであろう。
 
 ### Memory and Persistence
+メモリと永続性
 
 We mentioned before that Redis is an in-memory persistent store. With respect to persistence, by default, Redis snapshots the database to disk based on how many keys have changed. You configure it so that if X number of keys change, then save the database every Y seconds. By default, Redis will save the database every 60 seconds if 1000 or more keys have changed all the way to 15 minutes if only a 9 keys has changed.
+前述したように、Redisはインメモリの永続データストアである。永続性という点に関しては、デフォルトでは、Redisはインメモリのデータベースを差分ベースで定期的にディスクにバックアップする（スナップショットを取る）。あなたは、X個のキーが変更されたとき、Y分ごとにデータベースをディスクに保存するというように設定できる。デフォルトの設定では、Redisは60分ごとに9個以上のキーが更新された場合に保存し、1000以上のキーが更新された場合は15分以内に更新する。
 
 Alternatively (or in addition to snapshotting), Redis can run in append mode. Any time a key changes, an append-only file is updated on disk. In some cases it's acceptable to lose 60 seconds worth of data, in exchange for performance, should there be some hardware or software failure. In some cases such a loss is not acceptable. Redis gives you the option. In chapter 5 we'll see a third option, which is offloading persistence to a slave.
+代わりに（もしくは定期スナップショットに加えて）、Redisを追加モードで実行することもできる。キーが更新されたとき、追記のみを記録したファイルがディスク上で更新される。定期スナップショットによる記録では、ハードもしくはソフトウェアの障害によって、最悪の場合60分間のデータを失うことがある。場合によっては、パフォーマンスとのトレードオフで、このリスクを許容することもありうるだろう。このような損失を許容しがたい場合のために、Redisは追記ファイルというオプションを提供している。また、３つめのオプションとして、5章ではスレーブによるオフロード永続性について説明する。
 
 With respect to memory, Redis keeps all your data in memory. The obvious implication of this is the cost of running Redis: RAM is still the most expensive part of server hardware. 
+Redisはあなたの全てのデータをメモリに置く。この分かりやすい実装は、Redisの運用コストである。RAMは、現在においてももっとも高価なサーバハードウェアであるからだ。
 
 I do feel that some developers have lost touch with how little space data can take. The Complete Works of William Shakespeare takes roughly 5.5MB of storage. As for scaling, other solutions tend to be IO- or CPU-bound. Which limitation (RAM or IO) will require you to scale out to more machines really depends on the type of data and how you are storing and querying it. Unless you're storing large multimedia files in Redis, the in-memory aspect is probably a non-issue. For apps where it is an issue you'll likely be trading being IO-bound for being memory bound.
+
 
 Redis did add support for virtual memory. However, this feature has been seen as a failure (by Redis' own developers) and its use has been deprecated. 
 
