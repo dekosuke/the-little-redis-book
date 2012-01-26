@@ -133,18 +133,25 @@ Using specific data structures for specific problems? Isn't that how we code? Yo
 ## The Building Blocks
 
 ### Databases
+データベース
 
 Redis has the same basic concept of a database that you are already familiar with. A database contains a set of data. The typical use-case for a database is to group all of an application's data together and to keep it separate from another application's. 
+もしデータベースのコンセプトを知っているなら、Redisのコンセプトも同じである。データベースは、データの集合を格納する。典型的には、データベースはそのアプリケーションに属する全てのデータをグループ化し、他のアプリケーションのデータとは区別するように使われるだろう。
 
 In Redis, databases are simply identified by a number with the default database being number `0`. If you want to change to a different database you can do so via the `select` command. In the command line interface, type `select 1`. Redis should reply with an `OK` message and your prompt should change to something like `redis 127.0.0.1:6379[1]>`. If you want to switch back to the default database, just enter `select 0` in the command line interface..
+Redisでは、データベースは単純な番号で区別される。デフォルトの番号は`0`である。もしあなたが別のデータベースに移動したい場合は、`select`コマンドを使えばいい。コマンドラインインターフェイスを開いて、`select 1`と打ち込んでみよう。Redisは`OK`と反応し、コマンドプロンプトは`redis 127.0.0.1:6379[1]>`のように変わるはずである。デフォルトのデータベースに戻りたい場合は、`select 0`と打ち込めばいい。
 
 ### Commands, Keys and Values
+コマンド、キーとバリュー
 
 While Redis is more than just a key-value store, at its core, every one of Redis' five data structures has at least a key and a value. It's imperative that we understand keys and values before moving on to other available pieces of information.
+Redisは単なるキー・バリューストアではないが、Redisの5つのデータ構造は全て、キーとバリューを持つ。Redisについて知るためには、最初にこのキーとバリューについて理解しなければいけない。
 
 Keys are how you identify pieces of data. We'll be dealing with keys a lot, but for now, it's good enough to know that a key might look like `users:leto`. One could reasonably expect such a key to contain information about a user named `leto`. The colon doesn't have any special meaning, as far as Redis is concerned, but using a separator is a common approach people use to organize their keys.
+キーは、データを識別するためのものである。キーについてはこの後多くの説明をすることになるが、とりあえず今の時点では、キーは`users:leto`のような形式をしているということを知るだけで十分である。このキーは、名前が`leto`のユーザのデータを表している。コロンにRedisにとって特別な意味はないが、セパレータを使うのはデータを管理するための方法としてよく行われる。
 
 Values represent the actual data associated with the key. They can be anything. Sometimes you'll store strings, sometimes integers, sometimes you'll store serialized objects (in JSON, XML or some other format). For the most part, Redis treats values as a byte array and doesn't care what they are. Note that different drivers handle serialization differently (some leave it up to you) so in this book we'll only talk about string, integer and JSON.
+バリューは、キーに結びついた実際のデータである。データはどんなものでもよい。文字列でも、整数でも、シリアライズされたオブジェクト（JSON, XML やその他のフォーマット）でもよい。多くの場面において、Redisはデータをバイト列として扱い、その中身が何であるかについて感知しない。ドライバによってシリアライズの方法は自由なので（この部分はある意味あなたユーザ次第である）、この本では文字列、整数、JSONについてのみ扱う
 
 Let's get our hands a little dirty. Enter the following command:
 
