@@ -245,14 +245,19 @@ The important takeaway from this chapters are:
 \clearpage
 
 ## Chapter 2 - The Data Structures
+第2章 - データ構造
 
 It's time to look at Redis' five data structures. We'll explain what each data structure is, what methods are available and what type of feature/data you'd use it for.
+Redisの5つのデータ構造について見てみよう。それぞれのデータ構造が何なのか、どのような関数が利用可能なのか、どういうデータや機能を実装するためにそのデータ構造を使えば良いかについて説明する。
 
 The only Redis constructs we've seen so far are commands, keys and values. So far, nothing about data structures has been concrete. When we used the `set` command, how did Redis know what data structure to use? It turns out that every command is specific to a data structure. For example when you use `set` you are storing the value in a string data structure. When you use `hset` you are storing it in a hash. Given the small size of Redis' vocabulary, it's quite manageable.
+Redisを構成するもので、私たちが今まで見てきたものはコマンド、キーと値である。データ構造については、まだ何も具体的になっていない。`set`コマンドを使った場合、どのデータ構造を使えばいいのかをRedisはなぜ理解できるのだろうか？実は、すべてのコマンドは、特定のデータ構造専門なのである。例えば`set`を使った場合は値を文字列のデータ構造に格納しているのである。`hset`をｓ使った場合は、値をハッシュ構造に格納することになる。Redisのコマンドは小さい集まりであるので、この方法はとても扱いやすい。
 
 **[Redis' website](http://redis.io/commands) has great reference documentation. There's no point in repeating the work they've already done. We'll only cover the most important commands needed to understand the purpose of a data structure.**
+**[Redis' website](http://redis.io/commands) は素晴らしい参考文献である。このサイトが教えてくれることを、もう一度この本で繰り返すつもりはない。私たちは、その中でも最も重要なコマンドについてのみ扱い、データ構造を理解しよう。
 
 There's nothing more important than having fun and trying things out. You can always erase all the values in your database by entering `flushdb`, so don't be shy and try doing crazy things!
+実際に試してみること、そして楽しむことが一番重要である。`flushdb`コマンドを打てばいつでもデータベースを空にすることができる。だから臆病にならず、どんなことでも試してみてほしい。
 
 ### Strings
 
