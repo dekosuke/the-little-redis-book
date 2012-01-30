@@ -6,8 +6,12 @@
 \changepage{}{}{}{0.5cm}{}{-2cm}{}{}{}
 
 ## About This Book
+この本について
 
 ### License
+ライセンス
+
+ライセンスについては、英語ライセンスが正式のため翻訳せず原文のまま掲載します
 
 The Little Redis Book is licensed under the Attribution-NonCommercial 3.0 Unported license. You should not have paid for this book.
 
@@ -18,20 +22,27 @@ You can see the *full text* of **the license at**:
 <http://creativecommons.org/licenses/by-nc/3.0/legalcode>
 
 ### About The Author
+著者について
 
 Karl Seguin is a developer with experience across various fields and technologies. He's an active contributor to Open-Source Software projects, a technical writer and an occasional speaker. He's written various articles, as well as a few tools, about Redis. Redis powers the ranking and statistics of his free service for casual game developers: [mogade.com](http://mogade.com/).
+Karl SeguinはIT技術の多くの分野について実績のある開発者です。かれはOSSへのアクティブな貢献者であり、技術ライターでもあり、講演者でもあります。彼はRedisを含むいくつかの技術についての著書があります。彼はゲーム開発者にランキングや統計の機能を提供するためのフリーなサービス[mogade.com](http://mogade.com/)を運営をしていますが、Redisはこのサービスに大きな力を与えています。
 
 Karl wrote [The Little MongoDB Book](http://openmymind.net/2011/3/28/The-Little-MongoDB-Book/), the free and popular book about MongoDB.
+Karlは、著名なフリーライセンスのMongoDBの解説書 [The Little MongoDB Book](http://openmymind.net/2011/3/28/The-Little-MongoDB-Book/)の著者でもあります。
 
 His blog can be found at <http://openmymind.net> and he tweets via [@karlseguin](http://twitter.com/karlseguin)
+彼のブログは<http://openmymind.net>、Twitterアカウントは[@karlseguin](http://twitter.com/karlseguin)です。
 
 ### With Thanks To
+謝辞
 
-A special thanks to [Perry Neal](https://twitter.com/perryneal) for lending me his eyes, mind and passion. You provided me with invaluable help. Thank you.
+A special thanks to [Perry Neal](https://twitter.com/peroryneal) for lending me his eyes, mind and passion. You provided me with invaluable help. Thank you.
+[Perry Neal](https://twitter.com/peroryneal)に感謝します。彼は、私に視点を、精神を、情熱を提供してくれました。かけがえのない援助をしてくれました。感謝します。
 
 ### Latest Version
 
 The latest source of this book is available at:
+この本の最新のソースコードは以下のサイトで発見できます。
 <http://github.com/karlseguin/the-little-redis-book>
 
 \clearpage
@@ -260,8 +271,10 @@ There's nothing more important than having fun and trying things out. You can al
 実際に試してみること、そして楽しむことが一番重要である。`flushdb`コマンドを打てばいつでもデータベースを空にすることができる。だから臆病にならず、どんなことでも試してみてほしい。
 
 ### Strings
+文字列型
 
 Strings are the most basic data structures available in Redis. When you think of a key-value pair, you are thinking of strings. Don't get mixed up by the name, as always, your value can be anything. I prefer to call them "scalars", but maybe that's just me.
+
 
 We already saw a common use-case for strings, storing instances of objects by key. This is something that you'll make heavy use of:
 
