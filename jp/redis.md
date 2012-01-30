@@ -191,37 +191,56 @@ With respect to memory, Redis keeps all your data in memory. The obvious implica
 Redisはあなたの全てのデータをメモリに置く。この分かりやすい実装は、Redisの運用コストである。RAMは、現在においてももっとも高価なサーバハードウェアであるからだ。
 
 I do feel that some developers have lost touch with how little space data can take. The Complete Works of William Shakespeare takes roughly 5.5MB of storage. As for scaling, other solutions tend to be IO- or CPU-bound. Which limitation (RAM or IO) will require you to scale out to more machines really depends on the type of data and how you are storing and querying it. Unless you're storing large multimedia files in Redis, the in-memory aspect is probably a non-issue. For apps where it is an issue you'll likely be trading being IO-bound for being memory bound.
-
+私が強く感じていることは、一部の開発者が、データを保管するのに必要なメモリは実はそれほど多くないのだという感覚を持っていないということである。たとえば、シェークスピアの全集はだいたい5.5MBの容量しか取らない。スケール性に関しては、RAMの容量が問題にならないソリューションについては、IOもしくはCPUが問題になることが多い。RAMとディスクIOのどちらがスケールのために必要なのかは、どんなデータを保存し、どんなクエリによって問い合わせしたいかに強く依存する。大きなマルチメディアファイルを格納しようとしない限り、インメモリであることはおそらく問題にならないであろう。RAMのサイズが問題になるようなアプリケーションに関しては、IOバウンドにするかメモリバウンドにするかのトレードオフだと考えることができる。
 
 Redis did add support for virtual memory. However, this feature has been seen as a failure (by Redis' own developers) and its use has been deprecated. 
+Redisはインメモリだけではなく、仮想メモリ機能もサポートしている。しかし、この機能は一般的に失敗と見られている（Redisの開発者自身にとって）。仮想メモリ機能の使用は非推奨となっている。
 
 (On a side note, that 5.5MB file of Shakespeare's complete works can be compressed down to roughly 2MB. Redis doesn't do auto-compression but, since it treats values as bytes, there's no reason you can't trade processing time for RAM by compressing/decompressing the data yourself.
+（ちなみに、5.5MBのシェイクスピア全集は2MB程度に圧縮することができる。Redisはデータを単なるバイト列として扱うため、自動圧縮機能を持たないが、あなたが自分で圧縮・解凍機能を実装することを、RAM容量とのトレードオフとして選択できると考えることができる）
 
 ### Putting It Together
+まとめに
 
 We've touched on a number of high level topics. The last thing I want to do before diving into Redis is bring some of those topics together. Specifically, query limitations, data structures and Redis' way to store data in memory.
+これまで、いくつかのハイレベルなトピックについて外観してきた。Redisの世界に深く入る前に、これらのトピックについての架け橋を説明したい。特に、クエリの制限、データ構造、Redis流のデータ保管方法について。
 
 When you add those three things together you end up with something wonderful: speed. Some people think "Of course Redis is fast, everything's in memory." But that's only part of it. The real reason Redis shines versus other solutions is its specialized data structures. 
+この３つの問題を統合して考えることによって、あなたが得られるものは本当に素晴らしいものである。「Redisは速いに決まっているじゃないか、全てのものをメモリ上に置けるんだから」そう考える人もいるだろう。しかし、インメモリであることはRedisの一面でしかないのだ。Redisが素晴らしい本当の理由は、特化したデータ構造にこそあるのである。
 
 How fast? It depends on a lot of things - which commands you are using, the type of data, and so on. But Redis' performance tends to be measured in tens of thousands, or hundreds of thousands of operations **per second**. You can run `redis-benchmark` (which is in the same folder as the `redis-server` and `redis-cli`) to test it out yourself. 
+では、どのくらいRedisは高速なのか？これは多くのものに依存する。どのコマンドをあなたが使用しているか、データの形、その他・・・しかし、多くの測定で、Redisのは数万―数十万ものオペレーションを１秒間に行えるという結果が出ている。望むなら、あなた自身の環境でのベンチマークのために、`redis-benchmark`というコマンドを実行できる（このコマンドは`redis-server`や`redis-cli`と同じディレクトリにある）。
 
 I once changed code which used a traditional model to using Redis. A load test I wrote took over 5 minutes to finish using the relational model. It took about 150ms to complete in Redis. You won't always get that sort of massive gain, but it hopefully gives you an idea of what we are talking about
+私は一度、伝統的なデータモデルを使っていたコードをRedisに変更したことがある。古いリレーショナルなモデルで5分かかっていた処理が、Redisではわずか150msで終わるようになった。このような大きな利益をいつも得られるわけではないが、Redisについて私たちが話そうとしていることが伝わっただろうか？
 
 It's important to understand this aspect of Redis because it impacts how you interact with it. Developers with an SQL background often work at minimizing the number of round trips they make to the database. That's good advice for any system, including Redis. However, given that we are dealing with simpler data structures, we'll sometimes need to hit the Redis server multiple times to achieve our goal. Such data access patterns can feel unnatural at first, but in reality it tends to be an insignificant cost compared to the raw performance we gain.
+これらの話を理解することは、あなたがRedisとどうかかわるかに影響を与えるし、非常に重要である。SQLに慣れ親しんできた開発者は、データベースのラウンドトリップ数を最小化しようとする。もちろん、これは、Redisを含むすべてのデータベースに対して有効な方法である。しかし、データ構造をよりシンプルにしようとすれば、場合によってはサーバに複数回問い合わせすることが必要とされることもある。このような方法は最初は不自然に見えるかもしれないが、現実には、単純化によって得られるパフォーマンスのためには必要なコストであることが往々にしてあるのだ。
 
 ### In This Chapter
+この章では
 
 Although we barely got to play with Redis, we did cover a wide range of topics. Don't worry if something isn't crystal clear - like querying. In the next chapter we'll go hands-on and any questions you have will hopefully answer themselves. 
+Redisについての取り組みを始めただけだが、私たちは既に多くのトピックについてカバーした。全てのものが完全に明快にならなかったとしても、気にしないでほしい。次の章で実際に手を動かしてみて、今感じた疑問についても自然に答えられるようになるだろう。
 
 The important takeaway from this chapters are:
+この賞で学んだことで、重要なものは
 
 * Keys are strings which identify pieces of data (values)
 
+* キーはデータの塊（値）を識別するための文字列である
+
 * Values are arbitrary byte arrays that Redis doesn't care about
+
+* 値は任意のバイト列であり、Redisはその内容について関与しない
 
 * Redis exposes (and is implemented as) five specialized data structures
 
+* Redisは5つの特化したデータ構造を提供する
+
 * Combined, the above make Redis fast and easy to use, but not suitable for every scenario
+
+* これらのことが、Redisを高速で使いやすいストレージにしている。しかし、Redisはすべてのシナリオに対して適した道具ではない
 
 \clearpage
 
