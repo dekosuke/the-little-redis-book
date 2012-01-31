@@ -274,13 +274,15 @@ There's nothing more important than having fun and trying things out. You can al
 文字列型
 
 Strings are the most basic data structures available in Redis. When you think of a key-value pair, you are thinking of strings. Don't get mixed up by the name, as always, your value can be anything. I prefer to call them "scalars", but maybe that's just me.
-
+文字列は、Redisで利用できる最も基本的なデータ型である。キーと値のペアを考えているとき、実際はそれは文字列である。文字列という名前で混乱してはいけない。実際は、この値にはなんでも入れることができる。私はこの文字列型を「スカラー」と呼んでいるが、これは一般的な呼び名ではないかもしれない。
 
 We already saw a common use-case for strings, storing instances of objects by key. This is something that you'll make heavy use of:
+文字列型のよくある使い方についてはすでに見てきたとおりです。オブジェクトのインスタンスを、キーと結びつけて保管するのに使用するというのが、非常に多い使い方でしょう。
 
 	set users:leto "{name: leto, planet: dune, likes: [spice]}"
 
 Additionally, Redis lets you do some common operations. For example `strlen <key>` can be used to get the length of a key's value; `getrange <key> <start> <end>` returns the specified range of a value; `append <key> <value>` appends the value to the existing value (or creates it if it doesn't exist already). Go ahead and try those out. This is what I get:
+さらに、Redisはいくつかの共通操作を提供しています。例えば、`strlen <key>`キーに対応する値の長さを取得できます。`getrange <key> <start> <end>`は、値の指定された区間を返します。`append <key> <value>`は、すでに存在する値に新しい値を追加します（もしくはそれが存在しなければ、新規に作成します）。これらの操作を試してみましょう。
 	
 	> strlen users:leto
 	(integer) 42
@@ -292,8 +294,10 @@ Additionally, Redis lets you do some common operations. For example `strlen <key
 	(integer) 54
 
 Now, you might be thinking, that's great, but it doesn't make sense. You can't meaningfully pull a range out of JSON or append a value. You are right, the lesson here is that some of the commands, especially with the string data structure, only make sense given specific type of data. 
+あなたは、このように考えるかもしれません。「確かにこれはすごいが、合理的じゃない。JSONのデータ構造の一部を切り取ることや、追加することなんてできないじゃないか」確かにその通りです。ここで学んでおくべきことは、一部のコマンド、特に文字列型に関するコマンドは、特定のデータ型でのみ意味を持つということです。
 
 Earlier we learnt that Redis doesn't care about your values. Most of the time that's true. However, a few string commands are specific to some types or structure of values. As a vague example, I could see the above `append` and `getrange` commands being useful in some custom space-efficient serialization. As a more concrete example I give you the `incr`, `incrby`, `decr` and `decrby` commands. These increment or decrement the value of a string:
+以前に、Redisがあなたの値の中身について関知しないということを書きました。これは、実際ほとんどの場合については本当です。しかし、一部の文字列型のコマンドは、値の型や構造に依存します。先ほどの`append`や`getrange`コマンドは容量効率を求めるシリアライズの最適化に対して有効で、この場合は、明確にそうではないですが、データの構造に依存したコマンドということになります。もっと明快な例としては、`incr`, `incrby`, `decr`と`decrby`コマンドについて説明しましょう。これらは、文字列値をインクリメントしたりデクリメントしたりします。
 
 	> incr stats:page:about
 	(integer) 1
@@ -306,6 +310,7 @@ Earlier we learnt that Redis doesn't care about your values. Most of the time th
 	(integer) 8
 
 As you can imagine, Redis strings are great for analytics. Try incrementing `users:leto` (a non-integer value) and see what happens (you should get an error).
+ご想像がつくとおり、Redisの文字列型は解析に非常に有用です。そうだ、整数値でない`users:leto`キーもインクリメントさせてみましょう。エラーが出るはずです。
 
 A more advanced example is the `setbit` and `getbit` commands. There's a [wonderful post](http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/) on how Spool uses these two commands to efficiently answer the question "how many unique visitors did we have today". For 128 million users a laptop generates the answer in less than 50ms and takes only 16MB of memory. 
 
