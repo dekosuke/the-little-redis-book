@@ -313,17 +313,22 @@ As you can imagine, Redis strings are great for analytics. Try incrementing `use
 ご想像がつくとおり、Redisの文字列型は解析に非常に有用です。そうだ、整数値でない`users:leto`キーもインクリメントさせてみましょう。エラーが出るはずです。
 
 A more advanced example is the `setbit` and `getbit` commands. There's a [wonderful post](http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/) on how Spool uses these two commands to efficiently answer the question "how many unique visitors did we have today". For 128 million users a laptop generates the answer in less than 50ms and takes only 16MB of memory. 
+より高度な例としては、 `setbit` と `getbit` コマンドがあります。これらをSpoolが使って「どのくらいのデイリーユニークユーザがいたのか」についての、[素晴らしいブログ記事](http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/)があります。1億2800万ユーザの集計を、ノートPCで50msと16MBのメモリだけで行うことができることを、この例は示してくれました。
 
 It isn't important that you understand how bitmaps work, or how Spool uses them, but rather to understand that Redis strings are more powerful than they initially seem. Still, the most common cases are the ones we gave above: storing objects (complex or not) and counters. Also, since getting a value by key is so fast, strings are often used to cache data.
+上記のブログ記事で使用されているビットマップの動作原理について、またSpoolについて理解することは、今の時点ではそれほど重要ではありません。重要なことは、RedisのString型は、最初の感触よりはるかにパワフルであるということです。もちろん、一番良く使われるStringの用途としては（実装の詳細はともかく）、上記の例のようにカウンターとして使用することでしょう。また、キーで値を取得することがとても高速で行えるため、単純なキャッシュとして使用することも多いでしょう。
 
 ### Hashes
+ハッシュ型
 
 Hashes are a good example of why calling Redis a key-value store isn't quite accurate. You see, in a lot of ways, hashes are like strings. The important difference is that they provide an extra level of indirection: a field. Therefore, the hash equivalents of `set` and `get` are:
+ハッシュ型の例は、Redisが単純キーバリューストアではないということを示してくれる良い例でしょう。ハッシュ型は多くの点で文字列型と似ています。重要な違いは、ハッシュ型がString型に加えて、フィールドによってもう一段階だけ間接的にしてくれることです。文字列の`set`と`get`に対応するハッシュの操作は、
 
 	hset users:goku powerlevel 9000
 	hget users:goku powerlevel
 
 We can also set multiple fields at once, get multiple fields at once, get all fields and values, list all the fields or delete a specific field:
+複数のフィールドを同時にセットすることもできますし、複数のフィールドを同時に取得することもできます。さらに、すべてのフィールドと値を取得することや、全てのフィールドを列挙して特定のフィールドを削除することもできます。
 
 	hmset users:goku race saiyan age 737
 	hmget users:goku race powerlevel
@@ -332,10 +337,13 @@ We can also set multiple fields at once, get multiple fields at once, get all fi
 	hdel users:goku age
 
 As you can see, hashes give us a bit more control over plain strings. Rather than storing a user as a single serialized value, we could use a hash to get a more accurate representation. The benefit would be the ability to pull and update/delete specific pieces of data, without having to get or write the entire value. 
+このように、ハッシュは単純な文字列に加え、少しだけ豊富な管理を提供してくれます。ユーザのデータをシリアライズされた単一な文字列として記憶するより、ハッシュを用いてより正確なデータの表現をすることができるでしょう。そのようにすることで、ユーザデータの特定の一部だけを取ってきて更新や削除することができるようになり、毎回全部のデータを取得したり書き換えたりする必要がなくなります。
 
 Looking at hashes from the perspective of a well-defined object, such as a user, is key to understanding how they work. And it's true that, for performance reasons, more granular control might be useful. However, in the next chapter we'll look at how hashes can be used to organize your data and make querying more practical. In my opinion, this is where hashes really shine.
+ユーザのデータのように、構造がちゃんと定義されたオブジェクトという視点からハッシュを眺めることは、データ構造の理解に対してとても重要です。さらに、パフォーマンスの理由からも、粒度の高いデータ構造の管理は非常に便利でしょう。しかし、次の章では、ハッシュを使ってデータをどのように構造化し、クエリをより実用的にする方法について説明します。私の意見では、これがハッシュが最も真価を発揮する場所です。
 
 ### Lists
+リスト型
 
 Lists let you store and manipulate an array of values for a given key. You can add values to the list, get the first or last value and manipulate values at a given index. Lists maintain their order and have efficient index-based operations. We could have a `newusers` list which tracks the newest registered users to our site:
 
