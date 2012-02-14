@@ -346,38 +346,48 @@ Looking at hashes from the perspective of a well-defined object, such as a user,
 リスト型
 
 Lists let you store and manipulate an array of values for a given key. You can add values to the list, get the first or last value and manipulate values at a given index. Lists maintain their order and have efficient index-based operations. We could have a `newusers` list which tracks the newest registered users to our site:
+リスト型は、与えられたキーに対応する配列値を格納し操作するための方法を提供します。あなたは、リストに値を追加したり、リストの最初や最後の値を取得したり、そして望むインデックスの値を操作することができます。リスト型はデータの順序が保たれるデータ構造で、インデックスをベースにした操作を効率的に行うことができます。例えば、`newusers`リストがあったとしましょう。このリストは私たちのウェブサイトに最近登録したユーザを管理します。
 
 	rpush newusers goku
 	ltrim newusers 0 50
 
 First we push a new user at the front of the list, then we trim it so that it only contains the last 50 users. This is a common pattern. `ltrim` is an O(N) operation, where N is the number of values we are removing. In this case, where we always trim after a single insert, it'll actually have a constant performance of O(1) (because N will always be equal to 1).
+最初に、新規ユーザをリストの先頭にプッシュします。その後、リストを最新の50ユーザだけになるようにトリムします。この作業はよくあるパターンです。`ltrim`はこれから削除しようとしている要素の数Nに対し、O(N)の計算量です。この場合は、常に１要素を追加した後に削除を行うので、定数時間のパフォーマンスで行うことができます（なぜなら、Nは常に1だからです）。
 
 This is also the first time that we are seeing a value in one key referencing a value in another. If we wanted to get the details of the last 10 users, we'd do the following combination:
+また、この例はあるキーの値が別のキーの値に対する参照になっている最初の例でもあります。もし、最後の10ユーザに関する詳細な情報が欲しい場合は、次のようなことをすると良いでしょう。
 
 	keys = redis.lrange('newusers', 0, 10)
 	redis.mget(*keys.map {|u| "users:#{u}"})
 
 The above is a bit of Ruby which shows the type of multiple roundtrips we talked about before.
+上記のコードはRubyコードの小片で、前に説明した「複数のラウンドトリップ」の例でもあります。
 
 Of course, lists aren't only good for storing references to other keys. The values can be anything. You could use lists to store logs or track the path a user is taking through a site. If you were building a game, you might use it to track a queued user actions.
+もちろん、リストは他のキーへの参照を保持するだけが使い道ではありません。リストの値は、あなたの望むように使うことが出来ます。ログを保存することにも、ウェブサイトでのユーザの経路を追跡することにも、リストは使用できます。あなたがゲームの製作者であるなら、ユーザの行動履歴を追跡してもよいかもしれません。
 
 ### Sets
+集合型
 
 Set are used to store unique values and provide a number of set-based operations, like unions. Sets aren't ordered but they provide efficient value-based operations. A friend's list is the classic example of using a set:
+集合型は、ユニークな値の集合を保存し、和集合などの集合演算を行うために使用されます。集合は順序付けされていませんが、効率のいい値ベースの操作が提供されます。フレンドリストは集合の昔からある代表例です。
 
 	sadd friends:leto ghanima paul chani jessica
 	sadd friends:duncan paul jessica alia
 
 Regardless of how many friends a user has, we can efficiently tell (O(1)) whether userX is a friend of userY or not
+どれだけの友人をユーザが持っているかに関わらず、O(1)の時間でユーザXの友人にuserYがいるかどうかを判別できます。
 
 	sismember friends:leto jessica
 	sismember friends:leto vladimir
 
 Furthermore we can see what two or more people share the same friends:
+さらに、複数のユーザが同じ友人を持っているかを知ることもできます。
 
 	sinter friends:leto friends:duncan
 
 and even store the result at a new key:
+その結果を、別のキーに保存することもできます。
 
 	sinterstore friends:leto_duncan friends:leto friends:duncan
 
