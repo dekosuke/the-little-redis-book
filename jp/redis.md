@@ -392,28 +392,37 @@ and even store the result at a new key:
 	sinterstore friends:leto_duncan friends:leto friends:duncan
 
 Sets are great for tagging or tracking any other properties of a value for which duplicates don't make any sense (or where we want to apply set operations such as intersections and unions).
+集合型は、２つ同じものが被ることが意味をなさないようなプロパティを、タグ付けしたり追跡して管理するために非常に向いています。また、集合和、集合積、などの集合演算を行いたい要素の集合にも有効です。
 
 ### Sorted Sets
+ソート集合型
 
 The last and most powerful data structure are sorted sets. If hashes are like strings but with fields, then sorted sets are like sets but with a score. The score provides sorting and ranking capabilities. If we wanted a ranked list of friends, we might do:
+最後の、そして最もパワフルなデータ構造はソート集合型です。ハッシュ型をフィールドを伴う文字列とするなら、ソート集合型はスコアを伴った集合です。スコアによってソートできるようになり、要素の順番付けが可能になります。
 
 	zadd friends:leto 100 ghanima 95 paul 95 chani 75 jessica 1 vladimir
 
 Want to find out how many friends `leto` has with a rank of 90 or over?
+ユーザ`leto`の友達で、スコア90以上の人が何人いるかを知りたくないでしょうか？
 
 	zcount friends:leto 90 100
 
 How about figuring out `chani`'s rank?
+ユーザ`chani`の順位を見つけたいですよね。
 
 	zrevrank friends:leto chani
 
 We use `zrevrank` instead of `zrank` since Redis' default sort is from low to high (but in this case we are ranking from high to low). The most obvious use-case for sorted sets is a leaderboard system. In reality though, anything you want sorted by an some integer, and be able to efficiently manipulate based on that score, might be a good fit for a sorted set. 
+私たちは`zrank`ではなく`zrevrank`を使っていますが、これは、Redisのデフォルトのソートが昇順であるためです（この場合は、降順でデータを数えたいので）。一番わかりやすいソート集合型の使い道は順意表です。しかし、実際のデータ構造で、ある整数でソートされていてそのスコアによって効率的な操作ができるようなものは、全てソート集合に向いているということができるでしょう。
 
 In the next chapter we'll look at how sorted sets can be used for tracking events which are time-based (where time is the score); which is another common use-case.
+次章では、ソート集合が時系列のイベントを追跡するためにどのように使えるかを見ていきましょう。この場面では、時間がソート集合のスコアになります。これもまたよくあるユースケースです。
 
 ### In This Chapter
+この章では
 
 That's a high level overview of Redis' five data structures. One of the neat things about Redis is that you can often do more than you first realize. There are probably ways to use string and sorted sets that no one has thought of yet. As long as you understand the normal use-case though, you'll find Redis ideal for all types of problems. Also, just because Redis exposes five data structures and various methods, don't think you need to use all of them. It isn't uncommon to build a feature while only using a handful of commands.
+この章では、Redisの5つのデータ構造について、より高レベルな概要説明をしました。Redisの良い点の一つは、最初に思いつくことよりずっと多くのことが実際にRedisでおこなえることです。文字列型やソート集合型についても、今まで誰も思いつかなかったような上手い利用方法がまだきっとあるでしょう。もちろん、あなたが通常のユースケースについてちゃんと理解しているならが、どんな問題にだって上手く切り込んでいけるはずです。また、Redisが5つのデータ構造とそれに付随した様々な関数を提供しているからといって、その全てを使う必要はありません。少数のコマンドだけで特定の機能を実装するのは、決して珍しいことではありません。
 
 \clearpage
 
