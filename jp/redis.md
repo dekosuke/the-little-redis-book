@@ -427,10 +427,13 @@ That's a high level overview of Redis' five data structures. One of the neat thi
 \clearpage
 
 ## Chapter 3 - Leveraging Data Structures
+3章 - データ構造の力を利用する
 
 In the previous chapter we talked about the five data structures and gave some examples of what problems they might solve. Now it's time to look at a few more advanced, yet common, topics and design patterns.
+前章では、5つのデータ構造について話し、それらの構造が解決できる例をいくつか示しました。今から、より進んだ例を見ていきましょう。良く現れるトピックや、デザインパターンのようだと思ってください。
 
 ### Big O Notation
+ビッグO表記
 
 Throughout this book we've made references to the Big O notation in the form of O(n) or O(1). Big O notation is used to explain how something behaves given a certain number of elements. In Redis, it's used to tell us how fast a command is based on the number of items we are dealing with.
 
