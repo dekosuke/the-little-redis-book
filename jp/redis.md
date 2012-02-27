@@ -436,12 +436,16 @@ In the previous chapter we talked about the five data structures and gave some e
 ビッグO表記
 
 Throughout this book we've made references to the Big O notation in the form of O(n) or O(1). Big O notation is used to explain how something behaves given a certain number of elements. In Redis, it's used to tell us how fast a command is based on the number of items we are dealing with.
+この本を通じて、ビックO記法をO(n)やO(1)というように表記してきました。ビックO記法は、一定以上データが大きくなったときの挙動を説明するために使用されます。Redisでは、扱う要素数が大きくなったときのコマンドの速さを説明するために使用されています。
 
 Redis documentation tells us the Big O notation for each of its commands. It also tells us what the factors are that influence the performance. Let's look at some examples.
+Redisのドキュメントでは、それぞれのコマンドの計算量がビッグO記法で書かれています。また、どの要素がパフォーマンスに影響を与えるかについても書かれています。実際の例を見てみましょう。
 
 The fastest anything can be is O(1) which is a constant. Whether we are dealing with 5 items or 5 million, you'll get the same performance. The `sismember` command, which tells us if a value belongs to a set, is O(1). `sismember` is a powerful command, and its performance characteristics are a big reason for that. A number of Redis commands are O(1).
+最も速いものは、O(1)でのアクセスと書いてあるもので、この場合どんなサイズのデータ、たとえば要素数が5個でも5百万個でも、同じ速度でのアクセスができます。`sismember`は要素が集合型に含まれるかどうかを調べるもので、O(1)のコマンドです。`sismember`は実際パワフルなコマンドなのですが、その理由はO(1)でのアクセスに依るところが大きいのです。Redisのコマンドには、これ以外でもO(1)のコマンドがいくつかあります。
 
 Logarithmic, or O(log(N)), is the next fastest possibility because it needs to scan through smaller and smaller partitions. Using this type of divide and conquer approach, a very large number of items quickly gets broken down in a few iterations. `zadd` is a O(log(N)) command, where N is the number of elements already in the set.
+O(log(N))、あるいは対数量は、O(1)の次に速い処理で、要素を探すときに全体の一部しか参照する必要がありません。
 
 Next we have linear commands, or O(N). Looking for a non-indexed row in a table is an O(N) operation. So is using the `ltrim` command. However, in the case of `ltrim`, N isn't the number of elements in the list, but rather the elements being removed. Using `ltrim` to remove 1 item from a list of millions will be faster than using `ltrim` to remove 10 items from a list of thousands. (Though they'll probably both be so fast that you wouldn't be able to time it.)
 
